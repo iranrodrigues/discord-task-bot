@@ -1,7 +1,7 @@
 {
   "name": "discord-task-bot",
   "version": "1.0.0",
-  "description": "Bot Discord para gerar mensagens sobre a conclusão de tarefas",
+  "description": "Bot Discord para geração de mensagens sobre a conclusão de tarefas",
   "type": "module",
   "scripts": {
     "start": "node index.js",

@@ -24,21 +24,27 @@ function parseGitlabUrl(rawUrl) {
   const url = new URL(rawUrl);
 
   const parts = url.pathname.split('/').filter(Boolean);
-  const workItemIndex = parts.findIndex(p => p === 'work_items' || p === 'issues');
 
-  if (workItemIndex === -1) {
+  const dashIndex = parts.findIndex(p => p === '-');
+  if (dashIndex === -1) {
+    throw new Error('URL não parece ser de projeto GitLab com /-/ na rota.');
+  }
+
+  const resourceType = parts[dashIndex + 1]; // work_items ou issues
+  const issueIid = parts[dashIndex + 2];
+
+  if (!['work_items', 'issues'].includes(resourceType)) {
     throw new Error('URL não parece ser de issue/work_item do GitLab.');
   }
 
-  const projectPath = parts.slice(0, workItemIndex).join('/');
-  const issueIid = parts[workItemIndex + 1];
+  const projectPath = parts.slice(0, dashIndex).join('/');
 
   return {
     host: `${url.protocol}//${url.host}`,
     projectPath,
     encodedProjectPath: encodeURIComponent(projectPath),
     issueIid,
-    issueUrl: `${url.protocol}//${url.host}/${projectPath}/-/work_items/${issueIid}`,
+    issueUrl: `${url.protocol}//${url.host}/${projectPath}/-/${resourceType}/${issueIid}`,
     commentUrl: rawUrl
   };
 }
