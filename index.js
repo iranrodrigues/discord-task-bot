@@ -94,30 +94,46 @@ function buildMessage({ issueIid, title, commentUrl, beMrs, feMrs }) {
   const backendUrl = 'https://gitlab.ufal.br/nees/pnld-evidencias-grp/pnld-evidencias-backend';
   const frontendUrl = 'https://gitlab.ufal.br/nees/pnld-evidencias-grp/pnld-evidencias-frontend';
 
-  const beDev = beMrs[0] ? `• dev: ${backendUrl}/-/merge_requests/${beMrs[0]} ✅` : '• dev: MR ____ ✅';
-  const beHmg = beMrs[1] ? `• hmg: ${backendUrl}/-/merge_requests/${beMrs[1]} ⏳` : '• hmg: MR ____ ⏳';
-  const beRelease = beMrs[2] ? `• release: ${backendUrl}/-/merge_requests/${beMrs[2]} ⏳` : '• release: MR ____ ⏳';
+  const beDev = beMrs[0]
+    ? `- \`dev\`: ${backendUrl}/-/merge_requests/${beMrs[0]} ✅`
+    : `- \`dev\`: MR 9999 ✅`;
 
-  const feDev = feMrs[0] ? `• dev: ${frontendUrl}/-/merge_requests/${feMrs[0]} ✅` : '• dev: MR ____ ✅';
-  const feHmg = feMrs[1] ? `• hmg: ${frontendUrl}/-/merge_requests/${feMrs[1]} ⏳` : '• hmg: MR ____ ⏳';
-  const feRelease = feMrs[2] ? `• release: ${frontendUrl}/-/merge_requests/${feMrs[2]} ⏳` : '• release: MR ____ ⏳';
+  const beHmg = beMrs[1]
+    ? `- \`hmg\`: ${backendUrl}/-/merge_requests/${beMrs[1]} ⏳`
+    : `- \`hmg\`: MR 9999 ⏳`;
+
+  const beRelease = beMrs[2]
+    ? `- \`release\`: ${backendUrl}/-/merge_requests/${beMrs[2]} ⏳`
+    : `- \`release\`: MR 9999 ⏳`;
+
+  const feDev = feMrs[0]
+    ? `- \`dev\`: ${frontendUrl}/-/merge_requests/${feMrs[0]} ✅`
+    : `- \`dev\`: MR 9999 ✅`;
+
+  const feHmg = feMrs[1]
+    ? `- \`hmg\`: ${frontendUrl}/-/merge_requests/${feMrs[1]} ⏳`
+    : `- \`hmg\`: MR 9999 ⏳`;
+
+  const feRelease = feMrs[2]
+    ? `- \`release\`: ${frontendUrl}/-/merge_requests/${feMrs[2]} ⏳`
+    : `- \`release\`: MR 9999 ⏳`;
 
   return `${assignee}
 
-✅ **Issue #${issueIid}** — ${title}
+✅ *Issue #${issueIid}* — ${title}
 
 🧪 Testado em: \`dev-new\`
-⏳ Status: aguardando merge p/ \`hmg\` (${hmgResponsible}) → testes em \`hmg-new\`
+⏳ Status: aguardando merge para \`hmg\` (${hmgResponsible}) e liberação para testes em \`hmg-new\`
 
-💬 **Solução**
+💬 *Solução*
 ${commentUrl}
 
-🔧 **Back-end**
+🔧 *Back-end*
 ${beDev}
 ${beHmg}
 ${beRelease}
 
-🎨 **Front-end**
+🎨 *Front-end*
 ${feDev}
 ${feHmg}
 ${feRelease}`;
@@ -131,7 +147,9 @@ client.on(Events.InteractionCreate, async interaction => {
   if (!interaction.isChatInputCommand()) return;
   if (interaction.commandName !== 'task') return;
 
-  await interaction.deferReply({ ephemeral: true });
+  if (interaction.replied || interaction.deferred) return;
+
+  await interaction.deferReply({ flags: 64 });
 
   try {
     const url = interaction.options.getString('url', true);
@@ -150,7 +168,7 @@ client.on(Events.InteractionCreate, async interaction => {
     });
 
     await interaction.editReply({
-      content: `Copie e cole no canal:\n\n${message}`
+      content: `Copie e cole no WhatsApp:\n\n\`\`\`\n${message}\n\`\`\``
     });
   } catch (error) {
     console.error(error);
