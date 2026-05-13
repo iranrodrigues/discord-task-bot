@@ -91,39 +91,36 @@ function buildMessage({ issueIid, title, commentUrl, beMrs, feMrs }) {
   const assignee = process.env.DEFAULT_ASSIGNEE || '@André Almeida';
   const hmgResponsible = process.env.DEFAULT_HMG_RESPONSIBLE || '@Leonardo Soares';
 
-  const backendUrl = 'https://gitlab.ufal.br/nees/pnld-evidencias-grp/pnld-evidencias-backend';
-  const frontendUrl = 'https://gitlab.ufal.br/nees/pnld-evidencias-grp/pnld-evidencias-frontend';
-
   const beDev = beMrs[0]
-    ? `- \`dev\`: ${backendUrl}/-/merge_requests/${beMrs[0]} ✅`
+    ? `- \`dev\`: ${beMrs[0]} ✅`
     : `- \`dev\`: MR 9999 ✅`;
 
   const beHmg = beMrs[1]
-    ? `- \`hmg\`: ${backendUrl}/-/merge_requests/${beMrs[1]} ⏳`
-    : `- \`hmg\`: MR 9999 ⏳`;
+    ? `- \`hmg\`: ${beMrs[1]} ✅`
+    : `- \`hmg\`: MR 9999 ✅`;
 
   const beRelease = beMrs[2]
-    ? `- \`release\`: ${backendUrl}/-/merge_requests/${beMrs[2]} ⏳`
+    ? `- \`release\`: ${beMrs[2]} ⏳`
     : `- \`release\`: MR 9999 ⏳`;
 
   const feDev = feMrs[0]
-    ? `- \`dev\`: ${frontendUrl}/-/merge_requests/${feMrs[0]} ✅`
+    ? `- \`dev\`: ${feMrs[0]} ✅`
     : `- \`dev\`: MR 9999 ✅`;
 
   const feHmg = feMrs[1]
-    ? `- \`hmg\`: ${frontendUrl}/-/merge_requests/${feMrs[1]} ⏳`
-    : `- \`hmg\`: MR 9999 ⏳`;
+    ? `- \`hmg\`: ${feMrs[1]} ✅`
+    : `- \`hmg\`: MR 9999 ✅`;
 
   const feRelease = feMrs[2]
-    ? `- \`release\`: ${frontendUrl}/-/merge_requests/${feMrs[2]} ⏳`
+    ? `- \`release\`: ${feMrs[2]} ⏳`
     : `- \`release\`: MR 9999 ⏳`;
 
-  return `${assignee}
+  return `${assignee} ${hmgResponsible}
 
 ✅ *Issue #${issueIid}* — ${title}
 
 🧪 Testado em: \`dev-new\`
-⏳ Status: aguardando merge para \`hmg\` (${hmgResponsible}) e liberação para testes em \`hmg-new\`
+⏳ Status: aguardando testes em \`hmg-new\`
 
 💬 *Solução*
 ${commentUrl}
